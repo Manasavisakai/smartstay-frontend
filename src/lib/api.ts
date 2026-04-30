@@ -1,4 +1,4 @@
-export const API_BASE_URL = "";
+export const API_BASE_URL = "https://smartstay-backend-12345.azurewebsites.net/api/v1";
 
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
