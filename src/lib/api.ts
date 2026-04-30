@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://localhost:8000/api/v1";
+export const API_BASE_URL = "";
 
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
@@ -58,9 +58,9 @@ export async function getCurrentUser(token: string) {
 }
 
 export async function fetchUsers() {
-  const res = await fetch(`${API_BASE_URL}/users/`, { 
+  const res = await fetch(`${API_BASE_URL}/users/`, {
     headers: getAuthHeaders(),
-    cache: "no-store" 
+    cache: "no-store"
   });
   if (!res.ok) throw new Error("Failed to fetch users");
   return res.json();
@@ -88,9 +88,9 @@ export async function deleteUser(id: number) {
 }
 
 export async function fetchComplaints() {
-  const res = await fetch(`${API_BASE_URL}/complaints/`, { 
+  const res = await fetch(`${API_BASE_URL}/complaints/`, {
     headers: getAuthHeaders(),
-    cache: "no-store" 
+    cache: "no-store"
   });
   if (!res.ok) throw new Error("Failed to fetch complaints");
   return res.json();
@@ -134,9 +134,9 @@ export async function deleteComplaint(id: number) {
 }
 
 export async function fetchPayments() {
-  const res = await fetch(`${API_BASE_URL}/payments/`, { 
+  const res = await fetch(`${API_BASE_URL}/payments/`, {
     headers: getAuthHeaders(),
-    cache: "no-store" 
+    cache: "no-store"
   });
   if (!res.ok) throw new Error("Failed to fetch payments");
   return res.json();
