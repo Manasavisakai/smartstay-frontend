@@ -9,17 +9,38 @@ function getAuthHeaders() {
 }
 
 export async function loginApi(data: any) {
+  const formData = new URLSearchParams();
+  formData.append("username", data.email);
+  formData.append("password", data.password);
+
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: formData.toString(),
   });
+
+  let responseData;
+  const contentType = res.headers.get("content-type");
+  
+  if (contentType && contentType.includes("application/json")) {
+    responseData = await res.json();
+  } else {
+    responseData = await res.text();
+  }
+
   if (!res.ok) {
-    const error = await res.json();
-    const errorMessage = Array.isArray(error.detail) ? error.detail.map((e: any) => e.msg).join(", ") : (error.detail || "Login failed");
+    let errorMessage = "Login failed";
+    if (typeof responseData === "object" && responseData.detail) {
+      errorMessage = Array.isArray(responseData.detail)
+        ? responseData.detail.map((e: any) => e.msg).join(", ")
+        : responseData.detail;
+    } else if (typeof responseData === "string") {
+      errorMessage = responseData || `Error ${res.status}: ${res.statusText}`;
+    }
     throw new Error(errorMessage);
   }
-  return res.json();
+  
+  return responseData;
 }
 
 export async function registerApi(data: any) {
@@ -28,12 +49,29 @@ export async function registerApi(data: any) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+
+  let responseData;
+  const contentType = res.headers.get("content-type");
+  
+  if (contentType && contentType.includes("application/json")) {
+    responseData = await res.json();
+  } else {
+    responseData = await res.text();
+  }
+
   if (!res.ok) {
-    const error = await res.json();
-    const errorMessage = Array.isArray(error.detail) ? error.detail.map((e: any) => e.msg).join(", ") : (error.detail || "Registration failed");
+    let errorMessage = "Registration failed";
+    if (typeof responseData === "object" && responseData.detail) {
+      errorMessage = Array.isArray(responseData.detail)
+        ? responseData.detail.map((e: any) => e.msg).join(", ")
+        : responseData.detail;
+    } else if (typeof responseData === "string") {
+      errorMessage = responseData || `Error ${res.status}: ${res.statusText}`;
+    }
     throw new Error(errorMessage);
   }
-  return res.json();
+  
+  return responseData;
 }
 
 export async function googleLoginApi(data: any) {
