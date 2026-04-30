@@ -9,14 +9,10 @@ function getAuthHeaders() {
 }
 
 export async function loginApi(data: any) {
-  const formData = new URLSearchParams();
-  formData.append("username", data.email);
-  formData.append("password", data.password);
-
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: formData.toString(),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
   });
 
   let responseData;
