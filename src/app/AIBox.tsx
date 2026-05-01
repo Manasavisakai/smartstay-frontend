@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+
 export default function AIBox() {
   const [query, setQuery] = useState("");
   const [response, setResponse] = useState("");
@@ -14,51 +15,34 @@ export default function AIBox() {
     setError("");
     setResponse("");
 
-    const apiKey = process.env.NEXT_PUBLIC_AZURE_KEY || "";
-
-    if (!apiKey) {
-
-      console.error("NEXT_PUBLIC_AZURE_KEY is not defined in environment variables");
-      setError("AI unavailable: Configuration error");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const res = await fetch("https://smartstay-ai.openai.azure.com/openai/deployments/smartstay-ai/chat/completions?api-version=2025-01-01-preview", {
+      const res = await fetch("https://smartstay-backend-12345.azurewebsites.net/api/v1/ai/suggest", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "api-key": apiKey,
         },
-
-        body: JSON.stringify({
-          messages: [
-            { role: "system", content: "You are a SmartStay assistant." },
-            { role: "user", content: query }
-          ],
-          max_tokens: 100
-        }),
+        body: JSON.stringify({ query }),
       });
 
       if (!res.ok) {
-        throw new Error("AI unavailable");
+        throw new Error("Backend error");
       }
 
+
       const data = await res.json();
-      if (data.choices && data.choices.length > 0) {
-        const content = data.choices[0].message.content;
-        setResponse(content);
+      if (data.response) {
+        setResponse(data.response);
       } else {
         throw new Error("No response content");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("AI Error:", err);
-      setError("AI unavailable");
+      setError(`AI unavailable: ${err.message === "Configuration error" ? "Configuration error" : "Connection error"}`);
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div id="ai-assistant-box" className="mt-12 p-8 bg-white rounded-3xl shadow-xl border border-gray-100 transition-all hover:shadow-2xl">
