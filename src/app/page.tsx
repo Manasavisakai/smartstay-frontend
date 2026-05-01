@@ -2,6 +2,8 @@
 
 import { useAuth } from "@/context/AuthContext";
 import { fetchUsers, deleteUser, fetchPayments } from "@/lib/api";
+import AIBox from "./AIBox";
+
 import { useState, useEffect } from "react";
 
 export default function Dashboard() {
@@ -163,7 +165,9 @@ export default function Dashboard() {
             </div>
           </div>
         )}
+        <AIBox />
       </div>
     </div>
+
   );
 }
